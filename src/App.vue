@@ -1,11 +1,4 @@
 <template>
-  <header>
-    <nav>
-      <RouterLink to="/">Inicio</RouterLink>
-      <span> | </span>
-      <RouterLink to="/todos">Tareas</RouterLink>
-    </nav>
-  </header>
   <main>
     <RouterView />
   </main>
