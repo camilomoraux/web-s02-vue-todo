@@ -34,46 +34,13 @@
       </button>
     </div>
     <ul class="space-y-2" v-if="filtered.length">
-      <li
+      <TodoItem
         v-for="t in filtered"
         :key="t.id"
-        class="border rounded-md p-3 flex items-start gap-3 bg-white shadow-sm"
-      >
-        <select v-model="t.state" class="text-xs border rounded px-1 py-1 bg-zinc-50">
-          <option value="todo">Pendiente</option>
-          <option value="doing">En Proceso</option>
-          <option value="done">Lista</option>
-          <option value="archived">Archivada</option>
-        </select>
-        <div class="flex-1">
-          <input
-            v-if="editingId === t.id"
-            v-model="editTitle"
-            @keyup.enter="saveEdit(t)"
-            @blur="saveEdit(t)"
-            class="w-full border rounded px-2 py-1 text-sm"
-          />
-          <p v-else :class="['text-sm', t.state === 'done' ? 'line-through text-zinc-400' : '']">
-            {{ t.title }}
-          </p>
-          <p class="text-[11px] text-zinc-500 mt-1">{{ formatState(t.state) }}</p>
-        </div>
-        <div class="flex flex-col gap-1">
-          <button
-            v-if="editingId !== t.id"
-            @click="startEdit(t)"
-            class="text-xs text-blue-600 hover:underline"
-          >
-            Editar
-          </button>
-          <button v-else @click="cancelEdit" class="text-xs text-zinc-500 hover:underline">
-            Cancelar
-          </button>
-          <button @click="removeTodo(t.id)" class="text-xs text-red-600 hover:underline">
-            Eliminar
-          </button>
-        </div>
-      </li>
+        :todo="t"
+        @update:todo="updateTodo"
+        @remove="removeTodo"
+      />
     </ul>
     <p v-else class="text-sm text-zinc-500">Sin tareas para este filtro.</p>
   </div>
@@ -81,14 +48,13 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import TodoItem from '@/components/TodoItem.vue'
 
 const STORAGE_KEY = 'todos-v1'
 
 const newTitle = ref('')
 const todos = ref(load())
 const currentFilter = ref('all')
-const editingId = ref(null)
-const editTitle = ref('')
 
 const filters = [
   { label: 'Todas', value: 'all' },
@@ -128,36 +94,15 @@ function removeTodo(id) {
   todos.value = todos.value.filter((t) => t.id !== id)
 }
 
-function startEdit(t) {
-  editingId.value = t.id
-  editTitle.value = t.title
-  // focus managed by browser order
-}
-function cancelEdit() {
-  editingId.value = null
-  editTitle.value = ''
-}
-function saveEdit(t) {
-  if (editingId.value !== t.id) return
-  const title = editTitle.value.trim()
-  if (title) t.title = title
-  cancelEdit()
+function updateTodo(updated) {
+  const idx = todos.value.findIndex((t) => t.id === updated.id)
+  if (idx !== -1) todos.value[idx] = updated
 }
 
 const filtered = computed(() => {
   if (currentFilter.value === 'all') return todos.value
   return todos.value.filter((t) => t.state === currentFilter.value)
 })
-
-function formatState(state) {
-  return state === 'todo'
-    ? 'Pendiente'
-    : state === 'doing'
-      ? 'En proceso'
-      : state === 'done'
-        ? 'Lista'
-        : 'Archivada'
-}
 
 watch(todos, persist, { deep: true })
 </script>
