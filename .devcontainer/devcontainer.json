@@ -1,0 +1,55 @@
+{
+  "name": "Sesión 2 – Fundamentos de Vue + To-Do App",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+
+  "features": {
+    "ghcr.io/devcontainers/features/git-lfs:1": {}
+  },
+
+  "postCreateCommand": "git lfs install || true && (npm ci || npm install)",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "ritwickdey.LiveServer",
+        "GulajavaMinistudio.mayukaithemevsc",
+        "PKief.material-icon-theme",
+        "aaron-bond.better-comments",
+        "usernamehw.errorlens",
+        "kamikillerto.vscode-colorize",
+        "GitHub.copilot",
+        "formulahendry.auto-close-tag",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.npm-intellisense",
+        "Vue.volar",
+        "sdras.vue-vscode-snippets"
+      ],
+      "settings": {
+        "workbench.colorTheme": "Mayukai Alucard",
+        "workbench.iconTheme": "material-icon-theme",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true
+        },
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact",
+          "vue",
+          "html"
+        ],
+        "tailwindCSS.includeLanguages": { "plaintext": "html" }
+      }
+    }
+  },
+
+  "forwardPorts": [5173, 3000],
+  "portsAttributes": {
+    "5173": { "label": "Vite/Preview", "onAutoForward": "notify" },
+    "3000": { "label": "Live Server", "onAutoForward": "notify" }
+  }
+}
