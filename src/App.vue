@@ -1,8 +1,19 @@
 <template>
-  <h1 class="text-3xl font-bold">Hola Mundo</h1>
+  <header>
+    <nav>
+      <RouterLink to="/">Inicio</RouterLink>
+      <span> | </span>
+      <RouterLink to="/todos">Tareas</RouterLink>
+    </nav>
+  </header>
+  <main>
+    <RouterView />
+  </main>
 </template>
 
-<script setup></script>
+<script setup>
+// Nada por ahora
+</script>
 
 <style scoped>
 header {
