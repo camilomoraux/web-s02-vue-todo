@@ -112,7 +112,7 @@ function save() {
   emitUpdate()
 }
 function remove() {
-  emits('remove', local.value.id)
+  emits('remove', local.value.id) // confirmación sucede en vista padre
 }
 function emitUpdate() {
   emits('update:todo', toRaw(local.value))

@@ -64,6 +64,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import Swal from 'sweetalert2'
 import TodoItem from '@/components/TodoItem.vue'
 
 const STORAGE_KEY = 'todos-v1'
@@ -126,8 +127,27 @@ function addTodo() {
   newDescription.value = ''
 }
 
-function removeTodo(id) {
+async function removeTodo(id) {
+  const todo = todos.value.find((t) => t.id === id)
+  const result = await Swal.fire({
+    title: '¿Eliminar tarea?',
+    text: todo ? `Se eliminará "${todo.title}"` : 'Esta acción no se puede deshacer',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#dc2626',
+    focusCancel: true,
+  })
+  if (!result.isConfirmed) return
   todos.value = todos.value.filter((t) => t.id !== id)
+  await Swal.fire({
+    title: 'Eliminada',
+    text: 'La tarea fue eliminada correctamente',
+    icon: 'success',
+    timer: 1300,
+    showConfirmButton: false,
+  })
 }
 
 function updateTodo(updated) {
