@@ -24,6 +24,26 @@
         {{ local.title }}
       </p>
       <p class="text-[11px] text-zinc-500 mt-1">{{ stateLabel }}</p>
+      <div class="mt-2">
+        <template v-if="editing">
+          <textarea
+            v-model="editDescription"
+            rows="2"
+            class="w-full border rounded px-2 py-1 text-xs focus:outline-none focus:ring focus:ring-blue-200 resize-y"
+            :class="editDescription.length > MAX_DESC ? 'border-red-400' : ''"
+            placeholder="Descripción (opcional)"
+          ></textarea>
+          <div
+            class="flex justify-end text-[10px] mt-1"
+            :class="editDescription.length > MAX_DESC ? 'text-red-600' : 'text-zinc-500'"
+          >
+            {{ editDescription.length }} / {{ MAX_DESC }}
+          </div>
+        </template>
+        <p v-else-if="local.description" class="text-xs text-zinc-600 whitespace-pre-line">
+          {{ local.description }}
+        </p>
+      </div>
     </div>
     <div class="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
       <button
@@ -59,6 +79,8 @@ const emits = defineEmits(['update:todo', 'remove'])
 const local = ref({ ...props.todo })
 const editing = ref(false)
 const editTitle = ref('')
+const editDescription = ref('')
+const MAX_DESC = 500
 
 watch(
   () => props.todo,
@@ -71,16 +93,21 @@ watch(
 function start() {
   editing.value = true
   editTitle.value = local.value.title
+  editDescription.value = local.value.description || ''
 }
 function cancel() {
   editing.value = false
   editTitle.value = ''
+  editDescription.value = ''
   local.value = { ...props.todo }
 }
 function save() {
   if (!editing.value) return
   const title = editTitle.value.trim()
   if (title) local.value.title = title
+  if (editDescription.value.length <= MAX_DESC) {
+    local.value.description = editDescription.value.trim()
+  }
   editing.value = false
   emitUpdate()
 }

@@ -4,19 +4,35 @@
       <h1 class="text-2xl font-semibold tracking-tight">Tus Tareas</h1>
       <RouterLink to="/" class="text-sm text-blue-600 hover:underline">Inicio</RouterLink>
     </div>
-    <form @submit.prevent="addTodo" class="flex gap-2 mb-6">
-      <input
-        v-model="newTitle"
-        type="text"
-        placeholder="Nueva tarea..."
-        class="flex-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-blue-200"
-      />
-      <button
-        :disabled="!newTitle.trim()"
-        class="bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-md"
-      >
-        Agregar
-      </button>
+    <form @submit.prevent="addTodo" class="mb-6 space-y-3">
+      <div class="flex gap-2">
+        <input
+          v-model="newTitle"
+          type="text"
+          placeholder="Título de la tarea..."
+          class="flex-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-blue-200"
+        />
+        <button
+          :disabled="!newTitle.trim() || newDescription.length > MAX_DESC"
+          class="bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-md"
+        >
+          Agregar
+        </button>
+      </div>
+      <div>
+        <textarea
+          v-model="newDescription"
+          placeholder="Descripción (opcional, máximo 500 caracteres)"
+          rows="3"
+          class="w-full border rounded-md px-3 py-2 text-sm resize-y focus:outline-none focus:ring focus:ring-blue-200"
+        ></textarea>
+        <div class="flex justify-between mt-1 text-[11px]">
+          <span :class="newDescription.length > MAX_DESC ? 'text-red-600' : 'text-zinc-500'">
+            {{ newDescription.length }} / {{ MAX_DESC }}
+          </span>
+          <span v-if="newDescription.length > MAX_DESC" class="text-red-600">Demasiado larga</span>
+        </div>
+      </div>
     </form>
     <div class="flex flex-wrap gap-3 mb-4 text-sm">
       <button
@@ -53,6 +69,8 @@ import TodoItem from '@/components/TodoItem.vue'
 const STORAGE_KEY = 'todos-v1'
 
 const newTitle = ref('')
+const newDescription = ref('')
+const MAX_DESC = 500
 const todos = ref(load())
 const currentFilter = ref('all')
 
@@ -77,17 +95,35 @@ function persist() {
 
 function sample() {
   return [
-    { id: crypto.randomUUID(), title: 'Configurar proyecto', state: 'done' },
-    { id: crypto.randomUUID(), title: 'Diseñar modelo de tareas', state: 'doing' },
-    { id: crypto.randomUUID(), title: 'Implementar CRUD básico', state: 'todo' },
+    {
+      id: crypto.randomUUID(),
+      title: 'Configurar proyecto',
+      state: 'done',
+      description: 'Estructura inicial, router y Tailwind.',
+    },
+    {
+      id: crypto.randomUUID(),
+      title: 'Diseñar modelo de tareas',
+      state: 'doing',
+      description: 'Definir campos: título, estado, descripción.',
+    },
+    {
+      id: crypto.randomUUID(),
+      title: 'Implementar CRUD básico',
+      state: 'todo',
+      description: 'Alta, edición, borrado y filtro.',
+    },
   ]
 }
 
 function addTodo() {
   const title = newTitle.value.trim()
   if (!title) return
-  todos.value.unshift({ id: crypto.randomUUID(), title, state: 'todo' })
+  if (newDescription.value.length > MAX_DESC) return
+  const desc = newDescription.value.trim()
+  todos.value.unshift({ id: crypto.randomUUID(), title, description: desc, state: 'todo' })
   newTitle.value = ''
+  newDescription.value = ''
 }
 
 function removeTodo(id) {
