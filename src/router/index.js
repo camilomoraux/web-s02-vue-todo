@@ -12,6 +12,11 @@ const routes = [
     name: 'Todos',
     component: () => import('../views/TodosView.vue'),
   },
+  {
+    path: '/todo-app',
+    name: 'TodoApp',
+    component: () => import('../views/TodoAppView.vue'),
+  },
 ]
 
 const router = createRouter({

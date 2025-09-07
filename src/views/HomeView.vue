@@ -19,11 +19,20 @@
       Empezaremos creando la estructura básica y luego agregaremos persistencia local (localStorage)
       y filtros por estado.
     </p>
-    <RouterLink
-      class="inline-block mt-5 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow transition-colors"
-      to="/todos"
-      >Ir al listado inicial de tareas</RouterLink
-    >
+    <div class="flex flex-col sm:flex-row gap-4 sm:gap-2 mt-6">
+      <RouterLink
+        class="inline-block mt-5 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow transition-colors"
+        to="/todos"
+      >
+        Ir a la app de ejemplo
+      </RouterLink>
+      <RouterLink
+        class="inline-block mt-5 bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md shadow transition-colors"
+        to="/todo-app"
+      >
+        ¡Hora de hacer mi propia app de tareas!
+      </RouterLink>
+    </div>
   </section>
 </template>
 
